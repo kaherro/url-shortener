@@ -27,8 +27,8 @@
 g++ -std=c++20 main.cpp sqlite3.o -o main 
 ```
 
-### API
-# Создать короткую ссылку: 
+# API
+### Создать короткую ссылку: 
 ```bash
 curl -X POST http://localhost:18080/short -d '{"url": "https://google.com", "expiration_date" : "2025-05-09 14:51:51"}'
 ```
@@ -38,7 +38,7 @@ curl -X POST http://localhost:18080/short -d '{"url": "https://google.com", "exp
 {"short_url": "http://localhost:18080/aBc12"}
 ```
 Параметр "url" указывать обязательно, "expiration_date" опционален (но если не указать, то ссылка будет считаться бессрочной). 
-# Перейти по короткой ссылке:
+### Перейти по короткой ссылке:
 ```bash
 curl -v http://localhost:18080/aBc12
 ```
