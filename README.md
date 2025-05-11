@@ -24,7 +24,7 @@
 
 ### Сборка
 ```bash
-g++ -std=c++20 main.cpp sqlite3.o -o main -lpthread -lboost_system
+g++ -std=c++20 main.cpp sqlite3.o -o main 
 ```
 
 ### API
