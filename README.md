@@ -40,6 +40,6 @@ curl -X POST http://localhost:18080/short -d '{"url": "https://google.com", "exp
 Параметр "url" указывать обязательно, "expiration_date" опционален (но если не указать, то ссылка будет считаться бессрочной). 
 ## Перейти по короткой ссылке:
 ```bash
-curl -v http://localhost:18080/aBc12
+curl http://localhost:18080/aBc12
 ```
 → 302 Redirect на оригинальный URL
