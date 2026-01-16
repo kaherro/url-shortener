@@ -1,5 +1,9 @@
 #include "crow_all.h"
-#include "sqlite3.h"
+#include "database.h"
+#include <iostream>
+#include <algorithm>
+#include <chrono>
+#include <format> 
 #include <string>
 #include <unordered_map>
 
@@ -24,74 +28,6 @@ std::string to_base62(int id10) {
     return id62; 
 }
 
-void insert_in_table(std::string original_url, std::string short_url, std::string expiration_date, sqlite3* db) {
-    std::string sql = "INSERT INTO urls(original_url, short_url, expiration_date) VALUES('";
-    sql += original_url + "'," + "'" + short_url + "', '" + expiration_date + "');";
-    int rc = sqlite3_exec(db, sql.c_str(), 0, 0, 0); 
-    if(rc) {
-        std::cerr << "Request (insert) error:" << sqlite3_errmsg(db) << std::endl; 
-    }
-}
-
-int get_table_last_id(std::string table_name, sqlite3* db) {
-    sqlite3_stmt* res;
-
-    std::string sql = "SELECT MAX(id) FROM " + std::string(table_name) + ";";
-    int last_id = 0;
-    
-    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &res, 0) == SQLITE_OK) {
-        if (sqlite3_step(res) == SQLITE_ROW) {
-            last_id = sqlite3_column_int(res, 0);
-        }
-        sqlite3_finalize(res);
-    } 
-    else {
-        std::cerr << "Request (last_id) error: " << sqlite3_errmsg(db) << std::endl;
-    }
-    return last_id;
-}
-
-std::string get_original_url(std::string table_name, sqlite3* db, std::string short_url) {
-    sqlite3_stmt* res = nullptr;
-
-    std::string sql = "SELECT original_url FROM " + std::string(table_name) + " WHERE short_url = '" + short_url + "';";
-    std::string original_url; 
-    
-    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &res, 0) == SQLITE_OK) {
-        if (sqlite3_step(res) == SQLITE_ROW) {
-            const unsigned char* text = sqlite3_column_text(res, 0);
-            if (text) {
-                original_url = reinterpret_cast<const char*>(text);
-            }
-        }
-        sqlite3_finalize(res);
-    } 
-    else {
-        std::cerr << "Request (last_id) error: " << sqlite3_errmsg(db) << std::endl;
-    }
-    return original_url;
-}
-
-std::string get_expiration_date(std::string table_name, sqlite3* db, std::string short_url) {
-    sqlite3_stmt* res = nullptr;
-
-    std::string sql = "SELECT expiration_date FROM " + std::string(table_name) + " WHERE short_url = '" + short_url + "';";
-    std::string expiration_date; 
-    
-    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &res, 0) == SQLITE_OK) {
-        if (sqlite3_step(res) == SQLITE_ROW) {
-            const unsigned char* text = sqlite3_column_text(res, 0);
-            if (text) {
-                expiration_date = reinterpret_cast<const char*>(text);
-            }
-        }
-        sqlite3_finalize(res);
-    } 
-    else {
-        std::cerr << "Request (expiration_date) error: " << sqlite3_errmsg(db) << std::endl;
-    }
-    return expiration_date;
-}
 
 crow::response redirect(const std::string& url)
 {
@@ -102,23 +38,8 @@ crow::response redirect(const std::string& url)
 
 int main()
 {
-    crow::SimpleApp app;
-    sqlite3* db; 
-    int rc = sqlite3_open("test.db", &db);
-    
-    if (rc) {
-        std::cerr << "Error while opening database.\n" << sqlite3_errmsg(db) << std::endl;
-        return 1;
-    } else {
-        std::cout << "Database was opened.\n" << std::endl;
-    }
-
-
-    rc = sqlite3_exec(db, "CREATE TABLE IF NOT EXISTS urls (id INTEGER PRIMARY KEY AUTOINCREMENT, original_url TEXT NOT NULL, short_url TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, expiration_date TEXT NOT NULL);", 0, 0, 0);
-    if (rc) {
-        std::cerr << "Error while creating table." << sqlite3_errmsg(db) << std::endl;
-        return 1;
-    } 
+    crow::SimpleApp app; 
+    Database db("test.db");
 
     //curl -X POST localhost:18080/short -d '{"url": "345678", "expiration_date" : "2025-05-09 14:51:51"}'
     CROW_ROUTE(app, "/short").methods(crow::HTTPMethod::POST)([&db](const crow::request& req){
@@ -134,7 +55,7 @@ int main()
             original_url = "http://" + original_url;
         }
 
-        int id = get_table_last_id("urls", db) + 1; 
+        int id = db.get_last_id() + 1; 
         std::string short_url = to_base62(id); 
 
         std::string expiration_date = "9999-12-31 23:59:59";
@@ -142,7 +63,7 @@ int main()
             expiration_date = json["expiration_date"].s(); 
         }
 
-        insert_in_table(original_url, short_url, expiration_date, db); 
+        db.insert_url(original_url, short_url, expiration_date); 
 
         crow::json::wvalue res; 
         res["short_url"] = "http://localhost:18080/" + short_url; 
@@ -151,8 +72,8 @@ int main()
 
     //curl localhost:18080/<short_url>
     CROW_ROUTE(app, "/<string>").methods(crow::HTTPMethod::GET)([&db](const crow::request& req, std::string short_url){
-        std::string original_url = get_original_url("urls", db, short_url); 
-        std::string expiration_date = get_expiration_date("urls", db, short_url); 
+        std::string original_url = db.get_original_url(short_url); 
+        std::string expiration_date = db.get_expiration_date(short_url); 
 
         auto now = std::chrono::system_clock::now();
         std::string current_date = std::format("{:%Y-%m-%d %H:%M:%S}", now);
@@ -167,5 +88,4 @@ int main()
 
 
     app.port(18080).multithreaded().run(); 
-    sqlite3_close(db);
 }
