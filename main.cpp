@@ -54,8 +54,7 @@ int get_table_last_id(std::string table_name, sqlite3* db) {
 std::string get_original_url(std::string table_name, sqlite3* db, std::string short_url) {
     sqlite3_stmt* res = nullptr;
 
-    std::string sql = "SELECT original_url FROM " + std::string(table_name) + " WHERE short_url = " + short_url + ";";
-
+    std::string sql = "SELECT original_url FROM " + std::string(table_name) + " WHERE short_url = '" + short_url + "';";
     std::string original_url; 
     
     if (sqlite3_prepare_v2(db, sql.c_str(), -1, &res, 0) == SQLITE_OK) {
@@ -76,8 +75,7 @@ std::string get_original_url(std::string table_name, sqlite3* db, std::string sh
 std::string get_expiration_date(std::string table_name, sqlite3* db, std::string short_url) {
     sqlite3_stmt* res = nullptr;
 
-    std::string sql = "SELECT expiration_date FROM " + std::string(table_name) + " WHERE short_url = " + short_url + ";";
-
+    std::string sql = "SELECT expiration_date FROM " + std::string(table_name) + " WHERE short_url = '" + short_url + "';";
     std::string expiration_date; 
     
     if (sqlite3_prepare_v2(db, sql.c_str(), -1, &res, 0) == SQLITE_OK) {
@@ -132,6 +130,10 @@ int main()
         }
 
         std::string original_url = json["url"].s(); 
+        if(original_url.substr(0, 7) != "http://" && original_url.substr(0, 8) != "https://") {
+            original_url = "http://" + original_url;
+        }
+
         int id = get_table_last_id("urls", db) + 1; 
         std::string short_url = to_base62(id); 
 
@@ -155,7 +157,6 @@ int main()
         auto now = std::chrono::system_clock::now();
         std::string current_date = std::format("{:%Y-%m-%d %H:%M:%S}", now);
         current_date = current_date.substr(0, 19); 
-
         if(current_date >= expiration_date) {
             std::cerr << "Error: short url was expired: "; 
             return crow::response(400, "Error: short_url was expired: " + expiration_date); 
