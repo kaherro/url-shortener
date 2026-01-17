@@ -24,9 +24,3 @@ jobs:
         cd build
         cmake ..
         make
-
-    - name: Verify build
-      run: |
-        cd build
-        ls -la
-        ./main 2>&1 | head -2 || echo "Build successful"
