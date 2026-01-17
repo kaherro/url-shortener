@@ -4,6 +4,14 @@ project(url-shortener)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(FetchContent)
+FetchContent_Declare(
+    boost
+    URL https://boostorg.jfrog.io/artifactory/main/release/1.84.0/source/boost_1_84_0.tar.bz2
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(boost)
+
 file(DOWNLOAD 
     "https://raw.githubusercontent.com/chriskohlhoff/asio/asio-1-30-2/asio/include/asio.hpp"
     "${CMAKE_BINARY_DIR}/asio.hpp"
@@ -16,7 +24,6 @@ file(DOWNLOAD
     SHOW_PROGRESS
 )
 
-include(FetchContent)
 FetchContent_Declare(
     sqlite
     URL https://www.sqlite.org/2024/sqlite-amalgamation-3450200.zip
@@ -38,6 +45,7 @@ add_executable(main
 target_include_directories(main PRIVATE 
     ${CMAKE_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include 
+    ${boost_SOURCE_DIR} 
 )
 
 target_compile_definitions(main PRIVATE ASIO_STANDALONE)
