@@ -4,19 +4,6 @@ project(url-shortener)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(FetchContent)
-file(DOWNLOAD 
-    "https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0-headers-only.tar.xz"
-    "${CMAKE_BINARY_DIR}/boost-headers.tar.xz"
-    SHOW_PROGRESS
-)
-
-# Распаковываем
-execute_process(
-    COMMAND tar -xf "${CMAKE_BINARY_DIR}/boost-headers.tar.xz"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-)
-
 file(DOWNLOAD 
     "https://raw.githubusercontent.com/chriskohlhoff/asio/asio-1-30-2/asio/include/asio.hpp"
     "${CMAKE_BINARY_DIR}/asio.hpp"
@@ -29,6 +16,7 @@ file(DOWNLOAD
     SHOW_PROGRESS
 )
 
+include(FetchContent)
 FetchContent_Declare(
     sqlite
     URL https://www.sqlite.org/2024/sqlite-amalgamation-3450200.zip
@@ -50,7 +38,6 @@ add_executable(main
 target_include_directories(main PRIVATE 
     ${CMAKE_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include 
-    ${CMAKE_BINARY_DIR}/boost_1_84_0
 )
 
 target_compile_definitions(main PRIVATE ASIO_STANDALONE)
