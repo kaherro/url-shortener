@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=/usr/bin/cmake;-P;/home/kahero/Desktop/url-shortener/build/_deps/sqlite-subbuild/sqlite-populate-prefix/src/sqlite-populate-stamp/download-sqlite-populate.cmake;COMMAND;/usr/bin/cmake;-P;/home/kahero/Desktop/url-shortener/build/_deps/sqlite-subbuild/sqlite-populate-prefix/src/sqlite-populate-stamp/verify-sqlite-populate.cmake;COMMAND;/usr/bin/cmake;-P;/home/kahero/Desktop/url-shortener/build/_deps/sqlite-subbuild/sqlite-populate-prefix/src/sqlite-populate-stamp/extract-sqlite-populate.cmake
+source_dir=/home/kahero/Desktop/url-shortener/build/_deps/sqlite-src
+work_dir=/home/kahero/Desktop/url-shortener/build/_deps
+url(s)=https://www.sqlite.org/2024/sqlite-amalgamation-3450200.zip
+hash=
+no_extract=
+

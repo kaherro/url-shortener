@@ -1,0 +1,3 @@
+/home/kahero/Desktop/url-shortener/build/_deps/sqlite-subbuild/CMakeFiles/sqlite-populate.dir
+/home/kahero/Desktop/url-shortener/build/_deps/sqlite-subbuild/CMakeFiles/edit_cache.dir
+/home/kahero/Desktop/url-shortener/build/_deps/sqlite-subbuild/CMakeFiles/rebuild_cache.dir

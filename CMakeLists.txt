@@ -5,12 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(DOWNLOAD 
-    "https://raw.githubusercontent.com/chriskohlhoff/asio/asio-1-30-2/asio/include/asio.hpp"
-    "${CMAKE_BINARY_DIR}/asio.hpp"
-    SHOW_PROGRESS
-)
-
-file(DOWNLOAD 
     "https://github.com/mattn/crow-bbs/raw/master/crow_all.h"
     "${CMAKE_BINARY_DIR}/crow_all.h"
     SHOW_PROGRESS
