@@ -1,4 +1,0 @@
-/home/kahero/Desktop/url-shortener/build/CMakeFiles/sqlite3_lib.dir
-/home/kahero/Desktop/url-shortener/build/CMakeFiles/main.dir
-/home/kahero/Desktop/url-shortener/build/CMakeFiles/edit_cache.dir
-/home/kahero/Desktop/url-shortener/build/CMakeFiles/rebuild_cache.dir

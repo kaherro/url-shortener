@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/main.dir/src/main.cpp.o CMakeFiles/main.dir/src/database.cpp.o CMakeFiles/main.dir/src/base62.cpp.o -o main  -lpthread libsqlite3_lib.a 
