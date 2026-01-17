@@ -25,3 +25,4 @@ jobs:
         cd build
         cmake ..
         make
+        rm -rf build
