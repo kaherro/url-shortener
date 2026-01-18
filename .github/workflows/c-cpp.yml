@@ -8,16 +8,21 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
+    - name: Install build tools
       run: |
         sudo apt-get update
-        sudo apt-get install -y g++ libboost-all-dev libsqlite3-dev
+        sudo apt-get install -y cmake g++ libboost-all-dev
       
-    - name: compile and run
-      run: g++ -std=c++20 main.cpp sqlite3.o -o main
+    - name: Build with CMake
+      run: |
+        rm -rf build
+        mkdir build
+        cd build
+        cmake ..
+        make
+        rm -rf build
