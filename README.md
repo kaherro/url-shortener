@@ -13,7 +13,23 @@
 
 - **C++20** 
 - **Crow** 
-- **SQLite3** 
+- **SQLite3**
+- **Cmake**
+
+### Структура проекта
+```
+project/
+├── src/
+│   ├── main.cpp           # Основной файл с API
+│   ├── database.cpp       # Работа с БД (SQLite3)
+│   └── base62.cpp         # Конвертация base10 ↔ base62
+├── include/
+│   ├── database.h
+│   └── base62.h
+├── CMakeLists.txt         # Конфигурация сборки
+├── test.db                # Пример базы данных
+└── README.md              # Документация проекта
+```
 
 ## Установка
 
@@ -22,9 +38,13 @@
 - Crow
 - SQLite3
 
-### Сборка
+### Сборка и запуск
 ```bash
-g++ -std=c++20 main.cpp sqlite3.o -o main 
+mkdir /build
+cd build
+cmake ..
+make
+./main
 ```
 
 # API
